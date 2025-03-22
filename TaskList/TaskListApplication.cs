@@ -1,5 +1,8 @@
 using TaskList;
-
+#if DEBUG
+TaskList.TaskList.Main(args);
+return;
+#endif
 if (args.Length > 0)
 {
     TaskList.TaskList.Main(args);
