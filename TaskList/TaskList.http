@@ -1,6 +1,31 @@
 @TaskList_HostAddress = http://localhost:5172
 
-GET {{TaskList_HostAddress}}/tasks/
+### Get All Projects
+GET {{TaskList_HostAddress}}/projects/
 Accept: application/json
 
 ###
+### Get view_by_deadline
+GET {{TaskList_HostAddress}}/projects/view_by_deadline
+Accept: application/json
+
+###
+### Create a New Project
+POST {{TaskList_HostAddress}}/projects/
+Accept: application/json
+Content-Type: application/json
+"p1"
+
+
+###  
+POST {{TaskList_HostAddress}}/projects/p1/tasks
+Accept: application/json
+Content-Type: application/json
+"t1"
+
+
+### Set Task Deadline
+PUT {{TaskList_HostAddress}}/projects/p1/tasks/1?deadline=2025-03-30
+Accept: application/json
+Content-Type: application/json
+

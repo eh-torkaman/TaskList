@@ -1,4 +1,6 @@
-﻿namespace TaskList.Repository;
+﻿using TaskList.Dtos;
+
+namespace TaskList.Repository;
 
 public class TaskOperationException : Exception
 {
@@ -73,6 +75,27 @@ public class TaskRepository : ITaskRepository
         return tasks;
     }
 
+    public IList<GroupedTaskByDeadlineDto> GetGroupedTaskListByDeadLine()
+    {
+        var rs = tasks
+         .SelectMany(kvp => kvp.Value.Select(task => new { Project = kvp.Key, Task = task }))
+         .GroupBy(item => item.Task.Deadline)
+         .OrderBy(group => group.Key ?? DateOnly.MaxValue) // Ensure null deadlines are last
+         .Select(dateGroup => new GroupedTaskByDeadlineDto
+         {
+             Deadline = dateGroup.Key?.ToString("dd-MM-yyyy") ?? "No deadline",
+             GroupdProjectTasks = dateGroup
+                 .GroupBy(item => item.Project)
+                 .Select(projectGroup => new GroupedTaskByProjectDto
+                 {
+                     Project = projectGroup.Key,
+                     Task = projectGroup.Select(item => item.Task).OrderBy(it => it.Id).ToList()
+                 })
+                 .ToList()
+         })
+         .ToList();
+        return rs;
+    }
     private long GetMaxTaskId()
     {
         return tasks.Values.SelectMany(t => t).Select(t => t.Id).DefaultIfEmpty(0).Max();

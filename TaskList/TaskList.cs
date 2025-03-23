@@ -6,10 +6,14 @@ namespace TaskList
     public sealed class TaskList
     {
 
+        // todo implement undo ...
+        //private IList<ICommand> _commandHistory= new List<ICommand>();
+        // save state....
         private const string QUIT = "quit";
         public static readonly string startupText = "Welcome to TaskList! Type 'help' for available commands.";
 
         private readonly IConsole console;
+        private readonly ITaskRepository taskRepo;
         private readonly CommandFactory commandFactory;
 
         public static void Main(string[] args)
@@ -17,10 +21,11 @@ namespace TaskList
             new TaskList(new RealConsole(), new TaskRepository()).Run();
         }
 
-        public TaskList(IConsole console, ITaskRepository tasks)
+        public TaskList(IConsole console, ITaskRepository taskRepo)
         {
             this.console = console;
-            this.commandFactory = new CommandFactory(tasks, console);
+            this.taskRepo = taskRepo;
+            this.commandFactory = new CommandFactory(taskRepo, console);
         }
 
         public void Run()
@@ -41,7 +46,7 @@ namespace TaskList
             }
         }
 
-        private void Execute(string commandLine)
+        public void Execute(string commandLine)
         {
             try
             {
@@ -62,6 +67,7 @@ namespace TaskList
 
         }
 
+        public ITaskRepository Repo => this.taskRepo;
 
 
     }

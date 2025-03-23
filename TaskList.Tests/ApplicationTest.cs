@@ -135,6 +135,7 @@ namespace Tasks
 
             Execute($"deadline 1 {tommorow}");
             Execute($"deadline 2 {today}");
+            Execute($"deadline 3 {today}");
             Execute($"deadline 5 {yesterday}");
             Execute("view-by-deadline");
             ReadLines(
@@ -144,15 +145,13 @@ namespace Tasks
                   $"{today}:",
                   $"   secrets:",
                   $"      2: Destroy all humans.",
+                  $"      3: Task3",
                   $"{tommorow}:",
                   $"   secrets:",
                   $"      1: Eat more donuts.",
                   "No deadline:",
-                  "   secrets:",
-                  "      3: Task3",
                   "   training:",
                   "      4: Four Elements of Simple Design"
-
 
              );
             Execute("quit");

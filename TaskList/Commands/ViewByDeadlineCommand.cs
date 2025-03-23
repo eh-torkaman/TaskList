@@ -1,5 +1,4 @@
-﻿
-using TaskList.Repository;
+﻿using TaskList.Repository;
 namespace TaskList.Commands;
 
 public class ViewByDeadlineCommand : ICommand
@@ -16,27 +15,24 @@ public class ViewByDeadlineCommand : ICommand
 
     public void Execute()
     {
-        // Group by deadline first, then by project
 
-        var groupedTasks = tasksRepo.GetAll()
-            .SelectMany(kvp => kvp.Value.Select(task => new { Project = kvp.Key, Task = task }))
-            .GroupBy(item => item.Task.Deadline)
-            .OrderBy(group => group.Key ?? DateOnly.MaxValue); // Null (no deadline) goes last
+        var result = tasksRepo.GetGroupedTaskListByDeadLine();
 
-        foreach (var dateGroup in groupedTasks)
+        foreach (var group in result)
         {
-            console.WriteLine($"{dateGroup.Key?.ToString("dd-MM-yyyy") ?? "No deadline"}:");
+            console.WriteLine($"{group.Deadline}:");
 
-            foreach (var projectGroup in dateGroup.GroupBy(item => item.Project))
+            foreach (var project in group.GroupdProjectTasks)
             {
-                console.WriteLine($"   {projectGroup.Key}:");
+                console.WriteLine($"   {project.Project}:");
 
-                foreach (var task in projectGroup)
+                foreach (var task in project.Task)
                 {
-                    console.WriteLine($"      {task.Task.Id}: {task.Task.Description}");
+                    console.WriteLine($"      {task.Id}: {task.Description}");
                 }
             }
         }
+
     }
 
 }

@@ -1,4 +1,6 @@
 ﻿
+using TaskList.Dtos;
+
 namespace TaskList.Repository
 {
     public interface ITaskRepository
@@ -10,6 +12,6 @@ namespace TaskList.Repository
         IList<Task> GetTasksByProject(string projectName);
         void SetTaskDone(long taskId, bool done);
         void SetTaskDeadline(long taskId, DateOnly? deadLine);
-
+        IList<GroupedTaskByDeadlineDto> GetGroupedTaskListByDeadLine();
     }
 }
