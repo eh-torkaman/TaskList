@@ -64,7 +64,10 @@ public class TaskRepository : ITaskRepository
         GetTaskById(taskId).Done = done;
     }
 
-
+    public void SetTaskDeadline(long taskId, DateOnly? deadLine)
+    {
+        GetTaskById(taskId).Deadline = deadLine;
+    }
     public IDictionary<string, IList<Task>> GetAll()
     {
         return tasks;

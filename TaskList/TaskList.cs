@@ -40,14 +40,21 @@ namespace TaskList
 
         private void Execute(string commandLine)
         {
-            var command = commandFactory.CreateCommand(commandLine);
             try
             {
-                command.Execute();
+                var command = commandFactory.CreateCommand(commandLine);
+                try
+                {
+                    command.Execute();
+                }
+                catch (TaskOperationException ex)
+                {
+                    console.WriteLine(ex.Message);
+                }
             }
-            catch (TaskOperationException ex)
+            catch (Exception ex)
             {
-                console.WriteLine(ex.Message);
+                console.WriteLine("Error!=> " + ex.Message);
             }
 
         }

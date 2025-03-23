@@ -51,7 +51,24 @@ namespace Tasks
             Execute("quit");
         }
 
+        [Test, Timeout(1000)]
+        public void TaskDeadlineCommand()
+        {
+            Execute("show");
 
+            Execute("add project secrets");
+            Execute("add task secrets Eat more donuts.");
+            Execute("add task secrets Destroy all humans.");
+            Execute("deadline 2 2025-01-01");
+            Execute("show");
+            ReadLines(
+                "secrets",
+                "    [ ] 1: Eat more donuts.",
+                "    [ ] 2: Destroy all humans. 2025-01-01",
+                ""
+            );
+            Execute("quit");
+        }
 
         [Test, Timeout(1000)]
         public void ItWorks()

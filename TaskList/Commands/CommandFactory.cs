@@ -39,6 +39,12 @@ public class CommandFactory
             case "uncheck":
                 return new CheckCommand(tasksRepo, int.Parse(commandRest[1]), false);
 
+            case "deadline":
+                var taskId = int.Parse(commandRest[1].Split(" ", 2)[0]);
+                var deadline = DateOnly.Parse(commandRest[1].Split(" ", 2)[1]);
+                return new TaskDeadlineCommand(tasksRepo, taskId, deadline);
+
+
             case "help":
                 return new HelpCommand(console);
 
