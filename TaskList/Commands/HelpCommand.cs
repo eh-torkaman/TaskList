@@ -26,6 +26,7 @@ public class HelpCommand : ICommand
         console.WriteLine("  uncheck <task ID>");
         console.WriteLine("  deadline <ID> <date>");
         console.WriteLine("  today");
+        console.WriteLine("  view-by-deadline");
         console.WriteLine();
     }
 

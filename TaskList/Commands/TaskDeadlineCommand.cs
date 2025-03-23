@@ -1,7 +1,5 @@
 ﻿
-
 using TaskList.Repository;
-
 namespace TaskList.Commands;
 
 public class TaskDeadlineCommand : ICommand
@@ -15,7 +13,6 @@ public class TaskDeadlineCommand : ICommand
     public TaskDeadlineCommand(ITaskRepository tasksRepo, int taskId, DateOnly deadline)
     {
         this.tasksRepo = tasksRepo;
-
         this.taskId = taskId;
         this.deadline = deadline;
     }
@@ -25,7 +22,4 @@ public class TaskDeadlineCommand : ICommand
         tasksRepo.SetTaskDeadline(taskId, deadline);
     }
 
-
-
 }
-

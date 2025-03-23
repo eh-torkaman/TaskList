@@ -22,7 +22,7 @@ public class TodayCommand : ICommand
             console.WriteLine(project.Key);
             foreach (var task in project.Value.Where(task => task.Deadline == today))
             {
-                console.WriteLine("    [{0}] {1}: {2}{3}", (task.Done ? 'x' : ' '), task.Id, task.Description, task.Deadline != null ? $" {task.Deadline?.ToString("yyyy-MM-dd")}" : "");
+                console.WriteLine("    [{0}] {1}: {2}{3}", (task.Done ? 'x' : ' '), task.Id, task.Description, task.Deadline != null ? $" {task.Deadline?.ToString("dd-MM-yyyy")}" : "");
             }
             console.WriteLine();
         }

@@ -48,6 +48,7 @@ namespace Tasks
             "  uncheck <task ID>",
             "  deadline <ID> <date>",
             "  today",
+            "  view-by-deadline",
             ""
             );
             Execute("quit");
@@ -61,14 +62,99 @@ namespace Tasks
             Execute("add project secrets");
             Execute("add task secrets Eat more donuts.");
             Execute("add task secrets Destroy all humans.");
-            Execute("deadline 2 2025-01-01");
+            Execute("deadline 2 01-01-2025");
             Execute("show");
             ReadLines(
                 "secrets",
                 "    [ ] 1: Eat more donuts.",
-                "    [ ] 2: Destroy all humans. 2025-01-01",
+                "    [ ] 2: Destroy all humans. 01-01-2025",
                 ""
             );
+            Execute("quit");
+        }
+
+
+        [Test, Timeout(1000)]
+        public void TodayCommand()
+        {
+            Execute("show");
+            string today = DateOnly.FromDateTime(DateTime.Now).ToString("dd-MM-yyyy");
+            Execute("add project secrets");
+            Execute("add task secrets Eat more donuts.");
+            Execute("add task secrets Destroy all humans.");
+            Execute($"deadline 2 {today}");
+            Execute("today");
+            ReadLines(
+                "secrets",
+               $"    [ ] 2: Destroy all humans. {today}",
+                ""
+            );
+            Execute("quit");
+        }
+
+        [Test, Timeout(1000)]
+        public void ViewByDeadlineCommand_simple()
+        {
+            Execute("show");
+
+            string tommorow = DateOnly.FromDateTime(DateTime.Now.AddDays(1)).ToString("dd-MM-yyyy");
+
+            Execute("add project secrets");
+            Execute("add task secrets Eat more donuts.");
+            Execute($"deadline 1 {tommorow}");
+
+            Execute("view-by-deadline");
+            ReadLines(
+                $"{tommorow}:",
+                 $"   secrets:",
+                 $"      1: Eat more donuts."
+
+            );
+            Execute("quit");
+        }
+
+        [Test, Timeout(1000)]
+        public void ViewByDeadlineCommand()
+        {
+            Execute("show");
+
+            string today = DateOnly.FromDateTime(DateTime.Now).ToString("dd-MM-yyyy");
+            string yesterday = DateOnly.FromDateTime(DateTime.Now.AddDays(-1)).ToString("dd-MM-yyyy");
+            string tommorow = DateOnly.FromDateTime(DateTime.Now.AddDays(1)).ToString("dd-MM-yyyy");
+
+            Execute("add project secrets");
+            Execute("add task secrets Eat more donuts.");
+            Execute("add task secrets Destroy all humans.");
+            Execute("add task secrets Task3");
+
+            Execute("add project training");
+            Execute("add task training Four Elements of Simple Design");
+            Execute("add task training SOLID");
+
+            Execute("add project emptyProject");
+
+            Execute($"deadline 1 {tommorow}");
+            Execute($"deadline 2 {today}");
+            Execute($"deadline 5 {yesterday}");
+            Execute("view-by-deadline");
+            ReadLines(
+                 $"{yesterday}:",
+                  $"   training:",
+                  $"      5: SOLID",
+                  $"{today}:",
+                  $"   secrets:",
+                  $"      2: Destroy all humans.",
+                  $"{tommorow}:",
+                  $"   secrets:",
+                  $"      1: Eat more donuts.",
+                  "No deadline:",
+                  "   secrets:",
+                  "      3: Task3",
+                  "   training:",
+                  "      4: Four Elements of Simple Design"
+
+
+             );
             Execute("quit");
         }
 

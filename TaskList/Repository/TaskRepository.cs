@@ -72,10 +72,6 @@ public class TaskRepository : ITaskRepository
     {
         return tasks;
     }
-    public IList<Task> GetAllTasks()
-    {
-        return tasks.Values.SelectMany(x => x).ToList();
-    }
 
     private long GetMaxTaskId()
     {

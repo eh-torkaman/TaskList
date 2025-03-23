@@ -34,7 +34,10 @@ namespace TaskList
                 {
                     break;
                 }
-                Execute(command);
+                if (!string.IsNullOrWhiteSpace(command))
+                {
+                    Execute(command);
+                }
             }
         }
 

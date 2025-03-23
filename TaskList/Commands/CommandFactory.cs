@@ -24,6 +24,9 @@ public class CommandFactory
                 return new ShowCommand(tasksRepo, console);
             case "today":
                 return new TodayCommand(tasksRepo, console);
+            case "view-by-deadline":
+                return new ViewByDeadlineCommand(tasksRepo, console);
+
             case "add":
                 var subcommandRest = commandRest[1].Split(" ", 2);
                 if (subcommandRest[0] == "project")
@@ -43,7 +46,7 @@ public class CommandFactory
 
             case "deadline":
                 var taskId = int.Parse(commandRest[1].Split(" ", 2)[0]);
-                var deadline = DateOnly.Parse(commandRest[1].Split(" ", 2)[1]);
+                var deadline = DateOnly.ParseExact(commandRest[1].Split(" ", 2)[1], "dd-MM-yyyy");
                 return new TaskDeadlineCommand(tasksRepo, taskId, deadline);
 
 
