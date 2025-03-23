@@ -46,6 +46,8 @@ namespace Tasks
             "  add task <project name> <task description>",
             "  check <task ID>",
             "  uncheck <task ID>",
+            "  deadline <ID> <date>",
+            "  today",
             ""
             );
             Execute("quit");

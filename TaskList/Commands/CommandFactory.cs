@@ -22,6 +22,8 @@ public class CommandFactory
         {
             case "show":
                 return new ShowCommand(tasksRepo, console);
+            case "today":
+                return new TodayCommand(tasksRepo, console);
             case "add":
                 var subcommandRest = commandRest[1].Split(" ", 2);
                 if (subcommandRest[0] == "project")

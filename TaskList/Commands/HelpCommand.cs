@@ -15,6 +15,7 @@ public class HelpCommand : ICommand
     {
         Help();
     }
+    //after adding a command , you need to modify help method to show the command and also the test for help cpommand
     private void Help()
     {
         console.WriteLine("Commands:");
@@ -23,6 +24,8 @@ public class HelpCommand : ICommand
         console.WriteLine("  add task <project name> <task description>");
         console.WriteLine("  check <task ID>");
         console.WriteLine("  uncheck <task ID>");
+        console.WriteLine("  deadline <ID> <date>");
+        console.WriteLine("  today");
         console.WriteLine();
     }
 
