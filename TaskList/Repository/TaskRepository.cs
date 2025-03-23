@@ -45,7 +45,7 @@ public class TaskRepository : ITaskRepository
 
     public IList<Task> GetTasksByProject(string projectName)
     {
-        if (ContainsProject(projectName))
+        if (!ContainsProject(projectName))
             throw new TaskOperationException(string.Format("Could not find a project with the name \"{0}\".", projectName));
 
         return tasks[projectName];
