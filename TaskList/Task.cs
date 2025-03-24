@@ -11,4 +11,15 @@ namespace TaskList
         public DateOnly? Deadline { get; set; }
 
     }
+
+    public class Project
+    {
+        public string Name { get; set; }
+        public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
+        public IList<Task> Tasks { get; set; }
+        public Project()
+        {
+            Tasks = new List<Task>();
+        }
+    }
 }

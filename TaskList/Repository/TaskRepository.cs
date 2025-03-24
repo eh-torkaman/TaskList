@@ -15,16 +15,16 @@ public class TaskOperationException : Exception
 }
 public class TaskRepository : ITaskRepository
 {
-    private readonly Dictionary<string, IList<Task>> tasks;
+    private readonly List<Project> projects;
 
     public TaskRepository()
     {
-        tasks = new Dictionary<string, IList<Task>>();
+        projects = new();
     }
 
     public bool ContainsProject(string projectName)
     {
-        return tasks.ContainsKey(projectName);
+        return projects.Any(Project => Project.Name == projectName);
     }
 
     public void AddProject(string projectName)
@@ -32,17 +32,17 @@ public class TaskRepository : ITaskRepository
         if (ContainsProject(projectName))
             throw new TaskOperationException(string.Format("The project \"{0}\" already exists.", projectName));
 
-        tasks.Add(projectName, new List<Task>());
+        projects.Add(new Project { Name = projectName });
     }
 
     public void AddTask(string projectName, Task task)
     {
-        if (!tasks.TryGetValue(projectName, out var projectTasks))
+        if (!ContainsProject(projectName))
             throw new TaskOperationException(string.Format("Could not find a project with the name \"{0}\".", projectName));
 
 
         task.Id = GetMaxTaskId() + 1;
-        projectTasks.Add(task);
+        projects.First(x => x.Name == projectName).Tasks.Add(task);
     }
 
     public IList<Task> GetTasksByProject(string projectName)
@@ -50,12 +50,12 @@ public class TaskRepository : ITaskRepository
         if (!ContainsProject(projectName))
             throw new TaskOperationException(string.Format("Could not find a project with the name \"{0}\".", projectName));
 
-        return tasks[projectName];
+        return projects.First(x => x.Name == projectName).Tasks;
     }
 
     public Task GetTaskById(long taskId)
     {
-        var task = tasks.Values.SelectMany(t => t).FirstOrDefault(t => t.Id == taskId);
+        var task = projects.SelectMany(t => t.Tasks).FirstOrDefault(t => t.Id == taskId);
         if (task == null)
             throw new TaskOperationException(string.Format("Could not find a task with an ID of {0}.", taskId));
         return task;
@@ -70,22 +70,28 @@ public class TaskRepository : ITaskRepository
     {
         GetTaskById(taskId).Deadline = deadLine;
     }
-    public IDictionary<string, IList<Task>> GetAll()
+    public IList<Project> GetAll()
     {
-        return tasks;
+        return projects;
     }
 
     public IList<GroupedTaskByDeadlineDto> GetGroupedTaskListByDeadLine()
     {
-        var rs = tasks
-         .SelectMany(kvp => kvp.Value.Select(task => new { Project = kvp.Key, Task = task }))
+        var rs = projects
+              .SelectMany(p => p.Tasks.Select(t => new
+              {
+                  ProjectName = p.Name,
+                  ProjectCreatedAt = p.CreatedAt,
+                  Task = t,
+
+              }))
          .GroupBy(item => item.Task.Deadline)
          .OrderBy(group => group.Key ?? DateOnly.MaxValue) // Ensure null deadlines are last
          .Select(dateGroup => new GroupedTaskByDeadlineDto
          {
              Deadline = dateGroup.Key?.ToString("dd-MM-yyyy") ?? "No deadline",
              GroupdProjectTasks = dateGroup
-                 .GroupBy(item => item.Project)
+                 .GroupBy(item => item.ProjectName)
                  .Select(projectGroup => new GroupedTaskByProjectDto
                  {
                      Project = projectGroup.Key,
@@ -98,7 +104,7 @@ public class TaskRepository : ITaskRepository
     }
     private long GetMaxTaskId()
     {
-        return tasks.Values.SelectMany(t => t).Select(t => t.Id).DefaultIfEmpty(0).Max();
+        return projects.SelectMany(p => p.Tasks).Select(t => t.Id).DefaultIfEmpty(0).Max();
     }
 
 
