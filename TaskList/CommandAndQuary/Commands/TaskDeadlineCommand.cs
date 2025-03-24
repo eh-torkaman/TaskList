@@ -1,23 +1,21 @@
-﻿
+﻿using TaskList.Contracts;
 using TaskList.Repository;
-namespace TaskList.Commands;
+namespace TaskList.CommandAndQuary.Commands;
 
 public class TaskDeadlineCommand : ICommand
 {
-    private readonly ITaskRepository tasksRepo;
 
     private readonly int taskId;
     private readonly DateOnly deadline;
 
 
-    public TaskDeadlineCommand(ITaskRepository tasksRepo, int taskId, DateOnly deadline)
+    public TaskDeadlineCommand(int taskId, DateOnly deadline)
     {
-        this.tasksRepo = tasksRepo;
         this.taskId = taskId;
         this.deadline = deadline;
     }
 
-    public void Execute()
+    public void Execute(ITaskRepository tasksRepo)
     {
         tasksRepo.SetTaskDeadline(taskId, deadline);
     }

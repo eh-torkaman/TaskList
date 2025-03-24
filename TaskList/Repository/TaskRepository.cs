@@ -1,18 +1,7 @@
 ﻿using TaskList.Dtos;
+using TaskList.Exceptions;
 
 namespace TaskList.Repository;
-
-public class TaskOperationException : Exception
-{
-    public TaskOperationException() : base()
-    {
-
-    }
-    public TaskOperationException(string msg) : base(msg)
-    {
-
-    }
-}
 public class TaskRepository : ITaskRepository
 {
     private readonly List<Project> projects;

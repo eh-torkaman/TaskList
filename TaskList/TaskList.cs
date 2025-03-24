@@ -1,4 +1,6 @@
-﻿using TaskList.Commands;
+﻿using TaskList.CommandAndQuaryFactory;
+using TaskList.Contracts;
+using TaskList.Exceptions;
 using TaskList.Repository;
 
 namespace TaskList
@@ -14,7 +16,8 @@ namespace TaskList
 
         private readonly IConsole console;
         private readonly ITaskRepository taskRepo;
-        private readonly CommandFactory commandFactory;
+        private readonly CommandFactory commandFactory = new CommandFactory();
+        private readonly QueryFactory queryFactory = new QueryFactory();
 
         public static void Main(string[] args)
         {
@@ -25,7 +28,6 @@ namespace TaskList
         {
             this.console = console;
             this.taskRepo = taskRepo;
-            this.commandFactory = new CommandFactory(taskRepo, console);
         }
 
         public void Run()
@@ -51,14 +53,13 @@ namespace TaskList
             try
             {
                 var command = commandFactory.CreateCommand(commandLine);
-                try
-                {
-                    command.Execute();
-                }
-                catch (TaskOperationException ex)
-                {
-                    console.WriteLine(ex.Message);
-                }
+                ExecuteCommand(command);
+            }
+            catch (UnknownCommandException ex)
+            {
+                var query = queryFactory.CreateQuery(commandLine);
+                ExecuteQuery(query);
+
             }
             catch (Exception ex)
             {
@@ -67,6 +68,32 @@ namespace TaskList
 
         }
 
+
+        public void ExecuteQuery(IQuery query)
+        {
+            console.Write(query.Run(taskRepo));
+        }
+
+        public void ExecuteCommand(ICommand command)
+        {
+            try
+            {
+                command.Execute(taskRepo);
+                //push command to _commandHistory
+            }
+            catch (TaskOperationException ex)
+            {
+                console.WriteLine(ex.Message);
+            }
+        }
+
+
+        //public void UndoLastCommand()
+        //{
+        //    //var lastCommand = _commandHistory.Last();
+        //    //lastCommand.Undo(taskRepo);
+        //    //_commandHistory.Remove(lastCommand);
+        //}
         public ITaskRepository Repo => this.taskRepo;
 
 
